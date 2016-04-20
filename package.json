@@ -1,0 +1,14 @@
+{
+  "name": "ysfhcsine-validator",
+  "version": "1.0.0",
+  "description": "",
+  "main": "csine-validator.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Yuto Ino",
+  "license": "ISC",
+  "dependencies": {
+    "mongojs": "^2.3.0"
+  }
+}
