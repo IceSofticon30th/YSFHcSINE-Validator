@@ -1,5 +1,6 @@
 {
   "name": "ysfhcsine-validator",
+  "private": true,
   "version": "1.0.0",
   "description": "",
   "main": "csine-validator.js",
