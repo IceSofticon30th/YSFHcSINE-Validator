@@ -26,6 +26,10 @@ function validateSession(session_id, callback) {
 
 function sessionValidator(req, res, next) {
     if (!req.cookies) throw new Error('cookie parser required');
+    if (!req.cookies.session_id) {
+        res.redirect('/login');
+        return;
+    }
     validateSession(req.cookies.session_id, function (expires) {
         if (!expires) {
             next(new Error('Invalid Session'));
