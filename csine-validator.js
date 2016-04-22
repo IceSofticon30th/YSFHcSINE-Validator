@@ -24,17 +24,22 @@ function validateSession(session_id, callback) {
     });
 }
 
-function sessionValidator(noSession, invalidSession) {
+function sessionValidator(object) {
+    var noSession = object.noSession;
+    var invalidSession = object.invalidSession;
+    
     // Middleware for Express 4
     return function validator(req, res, next) {
         if (!req.cookies) throw new Error('cookie parser required');
         if (!req.cookies.session_id) {
-            noSession(req, res, next);
+            if (typeof noSession === 'function') noSession(req, res, next);
+            else next(new Error('No Session'));
             return;
         }
         validateSession(req.cookies.session_id, function (expires) {
             if (!expires) {
-                invalidSession(req, res, next);
+                if (typeof invalidSession === 'function') invalidSession(req, res, next);
+                else next(new Error('Invalid Session'));
             } else {
                 res.cookie('session_id', req.cookies.session_id, {expires: expires});
                 next();
