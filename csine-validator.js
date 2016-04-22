@@ -24,20 +24,23 @@ function validateSession(session_id, callback) {
     });
 }
 
-function sessionValidator(req, res, next) {
-    if (!req.cookies) throw new Error('cookie parser required');
-    if (!req.cookies.session_id) {
-        res.redirect('/login');
-        return;
-    }
-    validateSession(req.cookies.session_id, function (expires) {
-        if (!expires) {
-            next(new Error('Invalid Session'));
-        } else {
-            res.cookie('session_id', req.cookies.session_id, {expires: expires});
-            next();
+function sessionValidator(noSession, invalidSession) {
+    // Middleware for Express 4
+    return function validator(req, res, next) {
+        if (!req.cookies) throw new Error('cookie parser required');
+        if (!req.cookies.session_id) {
+            noSession(req, res, next);
+            return;
         }
-    });
+        validateSession(req.cookies.session_id, function (expires) {
+            if (!expires) {
+                invalidSession(req, res, next);
+            } else {
+                res.cookie('session_id', req.cookies.session_id, {expires: expires});
+                next();
+            }
+        });
+    }
 }
 
 module.exports = sessionValidator;
