@@ -30,7 +30,7 @@ function sessionValidator(object) {
     
     // Middleware for Express 4
     return function validator(req, res, next) {
-        if (!req.cookies) throw new Error('cookie parser required');
+        if (!req.cookies) next(new Error('req.cookies is undefined.'));
         if (!req.cookies.session_id) {
             if (typeof noSession === 'function') noSession(req, res, next);
             else next(new Error('No Session'));
