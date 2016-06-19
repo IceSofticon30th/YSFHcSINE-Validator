@@ -2,23 +2,20 @@ var mongojs = require('mongojs');
 var db = mongojs('YSFHcSINE', ['session']);
 
 function validateSession(session_id, callback) {
-    var expires = new Date();
-    expires.setHours(expires.getHours() + 1);
+    var newExpires = new Date();
+    newExpires.setHours(expires.getHours() + 1);
     
-    db.session.update({session_id: session_id}, {$set: {expires: expires} }, function (err, result) {
-        // { ok: 1, nModified: 0, n: 0 }
+    db.session.findOne({session_id: session_id}, function (err, doc) {
         if (err) {
             console.error(err.stack);
             callback(null);
             return;
         }
         
-        if (result.nModified === 1) {
-            callback(expires);
-        } else if (result.nModified === 0) {
-            callback(null);
+        if (doc.expires.getTime() - new Date().getTime() >= 0) {
+            callback(doc);
+            db.session.update({session_id: session_id}, {$set: {expires: newExpires} });
         } else {
-            console.error('ERROR: Detected overlap of session_id.');
             callback(null);
         }
     });
@@ -36,13 +33,12 @@ function sessionValidator(object) {
             else next(new Error('No Session'));
             return;
         }
-        validateSession(req.cookies.session_id, function (expires) {
-            if (!expires) {
+        validateSession(req.cookies.session_id, function (doc) {
+            if (doc) {
+                next();
+            } else {
                 if (typeof invalidSession === 'function') invalidSession(req, res, next);
                 else next(new Error('Invalid Session'));
-            } else {
-                res.cookie('session_id', req.cookies.session_id, {expires: expires});
-                next();
             }
         });
     }
