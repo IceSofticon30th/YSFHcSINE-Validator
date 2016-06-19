@@ -3,7 +3,7 @@ var db = mongojs('YSFHcSINE', ['session']);
 
 function validateSession(session_id, callback) {
     var newExpires = new Date();
-    newExpires.setHours(expires.getHours() + 1);
+    newExpires.setHours(newExpires.getHours() + 1);
     
     db.session.findOne({session_id: session_id}, function (err, doc) {
         if (err) {
