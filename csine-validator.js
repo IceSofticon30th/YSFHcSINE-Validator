@@ -11,6 +11,11 @@ function validateSession(session_id, callback) {
             callback(null);
             return;
         }
+
+        if (!doc) {
+            callback(null);
+            return;
+        }
         
         if (doc.expires.getTime() - new Date().getTime() >= 0) {
             callback(doc);
