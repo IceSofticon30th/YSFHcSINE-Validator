@@ -1,7 +1,7 @@
 {
   "name": "ysfhcsine-validator",
   "private": true,
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "",
   "main": "csine-validator.js",
   "scripts": {
@@ -10,6 +10,6 @@
   "author": "Yuto Ino",
   "license": "ISC",
   "dependencies": {
-    "mongojs": "^2.3.0"
+    "mongojs": "^2.4.0"
   }
 }
